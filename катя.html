@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Моя небольшая, но гиперактивная семья | Байкальский закат</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 14px;   /* маленький основной шрифт */
+            line-height: 1.45;
+            color: #2e241f;
+            background: #1c1512; /* fallback */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ----- ФОН: ИЗОБРАЖЕНИЕ С PINTREST (байкальский вечерний пейзаж) ----- */
+        .nature-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: url('https://i.pinimg.com/736x/ef/c3/a4/efc3a431c0b659ab668dbb72edc88284.jpg') no-repeat center center/cover;
+            overflow: hidden;
+        }
+        /* наложение полупрозрачной дымки для читаемости текста */
+        .nature-background::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+
+        /* вода (озеро) теперь не нужна, т.к. изображение уже содержит пейзаж,
+           но оставляем некоторые декоративные элементы для атмосферы (звезды, облака, легкие элементы)
+           однако убираем все лишние слои, которые перекрывают изображение */
+        /* удаляем lake, mountains, pine, sunset-sun, reflection, cloud-sunset, чтобы видно было картинку полностью */
+        
+        /* звезды (поверх картинки для романтики) */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .star {
+            position: absolute;
+            background: #fffbe3;
+            border-radius: 50%;
+            width: 2px;
+            height: 2px;
+            opacity: 0.7;
+            box-shadow: 0 0 4px #ffecb3;
+            animation: twinkle 4s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1);}
+            100% { opacity: 1; transform: scale(1.2);}
+        }
+        
+        /* добавляем легкие облака поверх картинки (нежные, почти прозрачные) */
+        .soft-cloud {
+            position: absolute;
+            background: rgba(255, 220, 170, 0.15);
+            border-radius: 1000px;
+            filter: blur(30px);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .cloud-left {
+            width: 320px;
+            height: 140px;
+            top: 15%;
+            left: -80px;
+        }
+        .cloud-right {
+            width: 400px;
+            height: 180px;
+            bottom: 20%;
+            right: -100px;
+        }
+        .cloud-mid {
+            width: 260px;
+            height: 100px;
+            top: 45%;
+            left: 70%;
+        }
+
+        /* основной контент поверх фона */
+        .content-wrapper {
+            position: relative;
+            z-index: 5;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem;
+            backdrop-filter: blur(1px);
+        }
+
+        /* заголовок */
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            background: rgba(20, 15, 12, 0.65);
+            backdrop-filter: blur(6px);
+            display: inline-block;
+            padding: 0.5rem 1.8rem;
+            border-radius: 60px;
+            letter-spacing: -0.2px;
+            color: #ffefcf;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,200,140,0.5);
+        }
+        .hero p {
+            font-size: 0.95rem;
+            margin-top: 0.7rem;
+            color: #fff2df;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            display: inline-block;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+        }
+
+        /* карточки: слегка полупрозрачные, читаемые */
+        .family-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: rgba(30, 25, 22, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 36px;
+            padding: 1.6rem 1.5rem 2rem;
+            transition: all 0.25s ease;
+            box-shadow: 0 18px 30px -12px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 190, 110, 0.4);
+            color: #fef0df;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(40, 32, 28, 0.85);
+            border-color: #f8b56e;
+            box-shadow: 0 24px 36px -12px black;
+        }
+
+        .avatar-icon {
+            font-size: 3rem;
+            background: #d9a56e30;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 40px;
+            margin-bottom: 1.2rem;
+            background: linear-gradient(135deg, #dba46e, #b57244);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            color: #2f2219;
+        }
+        .card h2 {
+            font-size: 1.55rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: #ffdfb3;
+            letter-spacing: -0.2px;
+        }
+        .card .sub {
+            font-size: 0.8rem;
+            color: #eccd9e;
+            margin-bottom: 1rem;
+            border-left: 3px solid #e9bc6d;
+            padding-left: 0.6rem;
+        }
+        .desc-list p, .desc-list {
+            color: #f7e9d7;
+        }
+        .desc-list i {
+            color: #f1bc7a;
+        }
+        .superpowers {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 28px;
+            padding: 0.8rem 1rem;
+            margin-top: 1rem;
+        }
+        .superpowers h3 {
+            color: #ffd8a8;
+        }
+        .superpowers li i {
+            color: #f1bc7a;
+        }
+        .dream-text {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 3px solid #f5bc70;
+        }
+        hr {
+            background: radial-gradient(circle, #ffb66e, transparent);
+        }
+        .footer-note {
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(3px);
+            color: #fbe5ca;
+        }
+        .footer-note i {
+            color: #f7bc6c;
+        }
+
+        /* КНОПКА С СЕРДЕЧКАМИ */
+        .heart-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0 1rem;
+        }
+        .heart-button {
+            background: linear-gradient(135deg, #ff758c, #ff4d6d);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(255, 215, 150, 0.4);
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: inherit;
+        }
+        .heart-button i {
+            font-size: 1.4rem;
+            transition: transform 0.2s;
+        }
+        .heart-button:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #ff8aa3, #ff3b5c);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+        }
+        .heart-button:active {
+            transform: scale(0.98);
+        }
+
+        /* анимация для летящих сердечек - разлет по всему экрану */
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            font-size: 1.6rem;
+            z-index: 1000;
+            user-select: none;
+            will-change: transform, opacity;
+            animation: flyAway 2s ease-out forwards;
+        }
+        @keyframes flyAway {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(0.6) rotate(0deg);
+            }
+            40% {
+                opacity: 0.9;
+                transform: translate(var(--dx, 0px), var(--dy, -80px)) scale(1.1) rotate(15deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--dx-end, 0px), var(--dy-end, -250px)) scale(0.7) rotate(40deg);
+            }
+        }
+
+        /* адаптивность */
+        @media (max-width: 760px) {
+            .card { background: rgba(20, 16, 14, 0.8); }
+            .hero h1 { font-size: 1.4rem; }
+            .heart-button { font-size: 1rem; padding: 0.6rem 1.5rem; }
+            .floating-heart { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- НОВЫЙ ФОН: ИЗОБРАЖЕНИЕ С ПИНТЕРЕСТ (вечерний закат на байкале, природа) 
+     удаляем все старые декоративные слои, которые конфликтовали с картинкой -->
+<div class="nature-background">
+    <!-- звездное небо поверх для романтики -->
+    <div class="stars">
+        <div class="star" style="top: 8%; left: 15%; width: 2px; height: 2px; animation-duration: 3s;"></div>
+        <div class="star" style="top: 12%; left: 35%; width: 1.8px; height: 1.8px; animation-duration: 4s;"></div>
+        <div class="star" style="top: 5%; left: 60%; width: 2.2px; height: 2.2px; animation-duration: 2.5s;"></div>
+        <div class="star" style="top: 20%; left: 80%; width: 1.5px; height: 1.5px; animation-duration: 3.8s;"></div>
+        <div class="star" style="top: 25%; left: 45%; width: 2px; height: 2px; animation-duration: 5s;"></div>
+        <div class="star" style="top: 15%; left: 90%; width: 1.8px; height: 1.8px; animation-duration: 3.2s;"></div>
+        <div class="star" style="top: 30%; left: 10%; width: 2px; height: 2px; animation-duration: 4.5s;"></div>
+        <div class="star" style="top: 35%; left: 70%; width: 1.6px; height: 1.6px; animation-duration: 3.7s;"></div>
+        <div class="star" style="top: 40%; left: 50%; width: 2px; height: 2px; animation-duration: 2.9s;"></div>
+        <div class="star" style="top: 45%; left: 85%; width: 1.4px; height: 1.4px; animation-duration: 4.1s;"></div>
+        <div class="star" style="top: 48%; left: 20%; width: 1.9px; height: 1.9px; animation-duration: 3.3s;"></div>
+        <div class="star" style="top: 55%; left: 65%; width: 2.1px; height: 2.1px; animation-duration: 3.9s;"></div>
+        <div class="star" style="top: 60%; left: 40%; width: 1.7px; height: 1.7px; animation-duration: 4.7s;"></div>
+        <div class="star" style="top: 65%; left: 10%; width: 2px; height: 2px; animation-duration: 2.8s;"></div>
+        <div class="star" style="top: 70%; left: 75%; width: 1.5px; height: 1.5px; animation-duration: 3.5s;"></div>
+    </div>
+    <!-- легкие полупрозрачные облака для атмосферы -->
+    <div class="soft-cloud cloud-left"></div>
+    <div class="soft-cloud cloud-right"></div>
+    <div class="soft-cloud cloud-mid"></div>
+</div>
+
+<main class="content-wrapper">
+    <div class="hero">
+        <h1>🌿 моя небольшая, но гиперактивная семья 🌅</h1>
+        <p>❤️ байкальский закат, мечты и суперспособности ❤️</p>
+    </div>
+
+    <div class="family-grid">
+        
+        <!-- Екатерина -->
+        <div class="card">
+            <div class="avatar-icon">
+                <i class="fas fa-child"></i>
+            </div>
+            <h2>Екатерина</h2>
+            <div class="sub">11 лет · будущий программист</div>
+            <div class="desc-list">
+                <p><i class="fas fa-dream"></i> <strong>✨ Мечта всей души:</strong> в 18 лет улететь с лучшей подругой в тропики, покорять океан и пальмы.</p>
+                <p><i class="fas fa-code"></i> <strong>Профессия мечты:</strong> профессиональный программист (если вдруг не захочет стать кем-то ещё, но пока это любовь!)</p>
+                <p><i class="fas fa-coins"></i> <strong>Финансовая свобода:</strong> зарабатывать много денег, чтобы ни в чём не нуждаться и жить на все 100%.</p>
+            </div>
+            <div class="dream-text">
+                <i class="fas fa-paper-plane"></i> «Когда мне исполнится 18, мы с подругой купим билеты до тропического рая, а я создам крутое приложение для путешествий!»
+            </div>
+            <hr>
+            <div class="superpowers">
+                <h3><i class="fas fa-star-of-life"></i> Кто вдохновляет</h3>
+                <ul>
+                    <li><i class="fas fa-laptop-code"></i> Учится программированию и мечтает о больших IT-проектах</li>
+                    <li><i class="fas fa-futbol"></i> Любит активный отдых и путешествия с родителями</li>
+                    <li><i class="fas fa-heart"></i> Верит, что труд и упорство приведут к успеху</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Мама Юлия -->
+        <div class="card">
+            <div class="avatar-icon">
+                <i class="fas fa-hand-sparkles"></i>
+            </div>
+            <h2>Юлия</h2>
+            <div class="sub">мама · душа компании</div>
+            <div class="superpowers" style="background: rgba(0, 0, 0, 0.35);">
+                <h3><i class="fas fa-gem"></i> Суперспособности мамы</h3>
+                <ul>
+                    <li><i class="fas fa-utensils"></i> <strong>Кулинарный гений</strong> – любые блюда становятся шедеврами, особенно её домашние пироги и ужины</li>
+                    <li><i class="fas fa-globe-asia"></i> <strong>Страсть к путешествиям</strong> – знает лучшие маршруты, вдохновляет на открытия</li>
+                    <li><i class="fas fa-square-root-alt"></i> <strong>Математический талант</strong> – легко решает любые задачи и объяснит даже самую сложную тему</li>
+                </ul>
+            </div>
+            <div class="desc-list">
+                <p><i class="fas fa-leaf"></i> Любит природу и каждое лето организует семейные походы.</p>
+                <p><i class="fas fa-brain"></i> Учит Екатерину логике и помогает с математикой для будущего программирования.</p>
+                <p><i class="fas fa-plane-departure"></i> «Путешествия наполняют жизнь красками, а готовка — уютом» — девиз Юлии.</p>
+            </div>
+        </div>
+
+        <!-- Папа Владимир -->
+        <div class="card">
+            <div class="avatar-icon">
+                <i class="fas fa-tools"></i>
+            </div>
+            <h2>Владимир</h2>
+            <div class="sub">папа · мастер & дачник</div>
+            <div class="superpowers" style="background: rgba(0, 0, 0, 0.35);">
+                <h3><i class="fas fa-bolt"></i> Суперсилы папы</h3>
+                <ul>
+                    <li><i class="fas fa-broom"></i> <strong>Любовь к уборке</strong> – наводит идеальный порядок, даже пыль не устоит</li>
+                    <li><i class="fas fa-wrench"></i> <strong>Мастер-ремонтник</strong> – починит всё: от розетки до велосипеда, ничто не сломается надолго</li>
+                    <li><i class="fas fa-car"></i> <strong>Король дорог</strong> – виртуозно водит свою большую TOYOTA, любые маршруты покорны</li>
+                    <li><i class="fas fa-fire"></i> <strong>Шашлычный магнат</strong> – жарит мясо невероятно сочно, все гости в восторге</li>
+                    <li><i class="fas fa-seedling"></i> <strong>Дачный герой</strong> – обожает сад и огород, урожай всегда на зависть соседям</li>
+                </ul>
+            </div>
+            <div class="desc-list">
+                <p><i class="fas fa-heart"></i> Всегда поддержит, поможет с ремонтом и приготовит шашлыки в любой праздник.</p>
+                <p><i class="fas fa-tree"></i> На даче проводит время с семьёй, создаёт атмосферу уюта.</p>
+                <p><i class="fas fa-smile"></i> «Если что-то сломалось – не беда, а ещё один повод для творчества».</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- КНОПКА — СЕРДЕЧКИ РАЗЛЕТАЮТСЯ ПО ВСЕМУ ЭКРАНУ -->
+    <div class="heart-button-container">
+        <button class="heart-button" id="heartRainBtn">
+            <i class="fas fa-heart"></i> Нажми — сердечки повсюду! <i class="fas fa-heart-broken"></i>
+        </button>
+    </div>
+
+    <!-- семейный блок -->
+    <div style="margin-top: 1rem; text-align: center;">
+        <div style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(6px); border-radius: 48px; padding: 1rem 1.5rem; max-width: 550px; margin: 0 auto; border: 1px solid #ffbc7a;">
+            <i class="fas fa-water" style="color: #ffb86c; font-size: 1.4rem;"></i>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem; color: #fff2e0;">🌲 Байкальский вечер — время семейного тепла. Мама Юлия, папа Владимир и Екатерина строят большие мечты под звёздным небом. 🌲</p>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <i class="far fa-heart"></i> закат на Байкале, энергия семьи и вера в чудеса  <i class="far fa-heart"></i>
+    </div>
+</main>
+
+<script>
+    (function() {
+        const button = document.getElementById('heartRainBtn');
+        if (!button) return;
+
+        // множество разных сердечек
+        const heartIcons = ['❤️', '💖', '💗', '💓', '💕', '💞', '❤️‍🔥', '🧡', '💛', '💘', '♥️', '💝', '❣️', '💟'];
+
+        function getRandomInRange(min, max) {
+            return min + Math.random() * (max - min);
+        }
+
+        // создаём одно сердечко со случайной позицией по всему экрану
+        function createHeartAtRandomPosition() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            
+            const randomHeart = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            heart.textContent = randomHeart;
+            
+            const size = 0.9 + Math.random() * 1.6;
+            heart.style.fontSize = `${size}rem`;
+            
+            const winWidth = window.innerWidth;
+            const winHeight = window.innerHeight;
+            const startX = Math.random() * winWidth;
+            const startY = Math.random() * winHeight;
+            heart.style.left = `${startX}px`;
+            heart.style.top = `${startY}px`;
+            
+            const dx = (Math.random() - 0.5) * 180;
+            const dy = - (80 + Math.random() * 200);
+            const dxEnd = dx + (Math.random() - 0.5) * 70;
+            const dyEnd = dy - (Math.random() * 100 + 30);
+            
+            heart.style.setProperty('--dx', `${dx}px`);
+            heart.style.setProperty('--dy', `${dy}px`);
+            heart.style.setProperty('--dx-end', `${dxEnd}px`);
+            heart.style.setProperty('--dy-end', `${dyEnd}px`);
+            
+            const delay = Math.random() * 0.15;
+            heart.style.animationDelay = `${delay}s`;
+            
+            document.body.appendChild(heart);
+            
+            heart.addEventListener('animationend', () => {
+                heart.remove();
+            });
+        }
+
+        function burstHeartsOverScreen() {
+            const heartCount = 60 + Math.floor(Math.random() * 50);
+            for (let i = 0; i < heartCount; i++) {
+                createHeartAtRandomPosition();
+            }
+            setTimeout(() => {
+                const extraCount = 30 + Math.floor(Math.random() * 40);
+                for (let i = 0; i < extraCount; i++) {
+                    createHeartAtRandomPosition();
+                }
+            }, 200);
+        }
+        
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            burstHeartsOverScreen();
+        });
+        
+        button.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            burstHeartsOverScreen();
+        });
+    })();
+</script>
+</body>
+</html>
